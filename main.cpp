@@ -1,5 +1,8 @@
 #include <iostream>
 #include <vector>
+#include <bits/stdc++.h>
+#include <string>
+#include "Persona.h"
 
 using namespace std;
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
@@ -33,6 +36,8 @@ int menu(){
 	return retValue;
 }
 
+vector <Persona>  *personas;
+
 int main(int argc, char** argv) {
 	int option=0;
 	while( option != 3 ) {
@@ -41,7 +46,12 @@ int main(int argc, char** argv) {
 		
 			case 1:{
 				string nombre,apellido,contra;
-				
+				cout<<"Nombre: ";
+				cin>>nombre;
+				cout<<"Apellido: ";
+				cin>>apellido;
+				cout<<"Contraseña: ";
+				cin>>contra;
 				
 				break;
 			}
