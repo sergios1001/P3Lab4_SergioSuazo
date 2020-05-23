@@ -38,6 +38,108 @@ int menu(){
 
 vector <Persona*>  personas;
 
+string cifrado(int llave, string mensaje, bool encrypt)
+{	
+	string encriptado;
+	char ascii;
+	int num_ascii;
+	if(llave==0)
+	{
+		return mensaje;
+	}
+	else
+	{
+		if(encrypt)
+		{
+			if(mensaje.size()<llave)
+			{
+				return cifrado(llave-1,mensaje,encrypt);
+			}
+			else
+			{
+				int track=0;
+				bool up=true;
+				for(int i=0;i<mensaje.size();i++)
+				{
+					if(up)
+					{
+						ascii=mensaje[i];
+						num_ascii=ascii;
+						num_ascii+=llave;
+						ascii=num_ascii;
+						encriptado+=ascii;
+						track++;
+						if(track=llave)
+						{
+							track=0;
+							up=false;
+						}
+					}
+					else
+					{
+						ascii=mensaje[i];
+						num_ascii=ascii;
+						num_ascii-=llave;
+						ascii=num_ascii;
+						encriptado+=ascii;
+						track++;
+						if(track=llave)
+						{
+							track=0;
+							up=true;
+						}
+					}
+				}
+				return cifrado(llave-1,encriptado,encrypt);
+			}
+		}
+		else
+		{
+			if(mensaje.size()<llave)
+			{
+				return cifrado(llave-1,mensaje,encrypt);
+			}
+			else
+			{
+				int track=0;
+				bool up=false;
+				for(int i=0;i<mensaje.size();i++)
+				{
+					if(up)
+					{
+						ascii=mensaje[i];
+						num_ascii=ascii;
+						num_ascii+=llave;
+						ascii=num_ascii;
+						encriptado+=ascii;
+						track++;
+						if(track=llave)
+						{
+							track=0;
+							up=false;
+						}
+					}
+					else
+					{
+						ascii=mensaje[i];
+						num_ascii=ascii;
+						num_ascii-=llave;
+						ascii=num_ascii;
+						encriptado+=ascii;
+						track++;
+						if(track=llave)
+						{
+							track=0;
+							up=true;
+						}
+					}
+				}
+				return cifrado(llave-1,encriptado,encrypt);
+			}
+		}
+	}
+}
+
 int main(int argc, char** argv) {
 	int option=0;
 	while( option != 3 ) {
@@ -64,11 +166,13 @@ int main(int argc, char** argv) {
 				cin>>nombre;
 				cout<<"Ingrese su contraseña: ";
 				cin>>contra;
-				
+				bool login;
 				for(int i=0;i<personas.size();i++)
 				{
+					
 					if(nombre==personas[i]->getNombre()&&contra==personas[i]->getContra())
 					{
+						login=true;
 						int accion=5;
 						while(accion!=0)
 						{
@@ -95,8 +199,9 @@ int main(int argc, char** argv) {
 												string mensaje;
 												cout<<"Ingrese el mensaje: ";
 												cin>>mensaje;
-												
-												personas[j]->setMensaje(mensaje);
+												string encriptado;
+												encriptado=cifrado(personas[j]->getLlave(),mensaje,true);
+												personas[j]->setMensaje(encriptado);
 												sent=true;
 														
 											}
@@ -122,6 +227,21 @@ int main(int argc, char** argv) {
 										{
 											cout<<j<<"- "<<personas[i]->getMensajes()[j]<< endl;
 										}
+										int seleccion;
+										cout<<"Seleccione un mensaje para desencriptar: ";
+										cin>>seleccion;
+										if(seleccion<personas[i]->getMensajes()[seleccion].size())
+										{
+											string decrypt;
+											decrypt=cifrado(personas[i]->getLlave(),personas[i]->getMensajes()[seleccion],false);
+											
+											cout<<"El mensaje es: "<<decrypt<< endl;
+										}
+										else
+										{
+											cout<<"Selecciono un mensaje invalido "<<endl;
+										}
+										
 									}
 									else
 									{
@@ -141,6 +261,10 @@ int main(int argc, char** argv) {
 						
 					}
 					
+				}
+				if(!login)
+				{
+					cout<<"Usuario o contraseña incorrectas, intente nuevamente "<<endl;
 				}
 				
 				break;	
